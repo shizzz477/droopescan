@@ -11,16 +11,19 @@ import os
 import signal
 import sys
 
+
 def handle_interrupt(signal, stack):
-    print("\nShutting down...")
-    common.shutdown = True
+	print ("\nShutting down...")
+	common.shutdown = True
+
 
 signal.signal(signal.SIGINT, handle_interrupt)
 
+
 class DroopeScanBase(controller.CementBaseController):
-    class Meta:
-        label = 'base'
-        description = """
+	class Meta:
+		label = 'base'
+		description = """
     |
  ___| ___  ___  ___  ___  ___  ___  ___  ___  ___
 |   )|   )|   )|   )|   )|___)|___ |    |   )|   )
@@ -29,35 +32,37 @@ class DroopeScanBase(controller.CementBaseController):
 =================================================
 """
 
-        epilog = template("help_epilog.mustache")
+		epilog = template("help_epilog.mustache")
 
-    @controller.expose(hide=True)
-    def default(self):
-        print(template("intro.mustache", {'version': version_get(),
-            'color': True}))
+	@controller.expose(hide=True)
+	def default(self):
+		print(template("intro.mustache", {'version': version_get(),
+		                                  'color': True}))
+
 
 class DroopeScan(foundation.CementApp):
-    testing = False
-    class Meta:
-        label = 'droopescan'
-        base_controller = DroopeScanBase
-        exit_on_close = False
-        #framework_logging = False
+	testing = False
+
+	class Meta:
+		label = 'droopescan'
+		base_controller = DroopeScanBase
+		exit_on_close = False
+	# framework_logging = False
+
 
 def main():
-    ds = DroopeScan("DroopeScan", plugin_config_dir=dscan.PWD + "./plugins.d",
-            plugin_dir=dscan.PWD + "./plugins", catch_signals=None)
+	ds = DroopeScan("DroopeScan", plugin_config_dir=dscan.PWD + "./plugins.d",
+	                plugin_dir=dscan.PWD + "./plugins", catch_signals=None)
 
-    handler.register(Scan)
+	handler.register(Scan)
 
-    try:
-        ds.setup()
-        ds.run()
-    except RuntimeError as e:
-        if not ds.debug and not ds.testing:
-            print(e, file=sys.stdout)
-        else:
-            raise
-    finally:
-        ds.close()
-
+	try:
+		ds.setup()
+		ds.run()
+	except RuntimeError as e:
+		if not ds.debug and not ds.testing:
+			print(e, file = sys.stdout)
+			else:
+			raise
+	finally:
+		ds.close()
